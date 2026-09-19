@@ -1,0 +1,11 @@
+.venv/
+.env
+.pytest_cache/
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.sqlite3-*
+frontend/node_modules/
+frontend/dist/
+tests/test_agentic_ai_hack_real_data.py
+tests/fixtures/agentic_ai_hack_zh.json

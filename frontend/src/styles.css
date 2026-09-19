@@ -1,0 +1,54 @@
+:root {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #f5f7fb;
+  background: #090a0d;
+  font-synthesis: none;
+}
+* { box-sizing: border-box; }
+html, body, #root { min-width: 320px; min-height: 100%; }
+body { margin: 0; background: #090a0d; }
+a { color: inherit; text-decoration: none; }
+.app-shell { min-height: 100vh; max-width: 1240px; margin: 0 auto; padding: 26px 28px 28px; display: flex; flex-direction: column; }
+.topbar { height: 54px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 14px; border: 1px solid #25272d; border-radius: 14px; background: #101115; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: #eef1f6; font-size: 14px; font-weight: 650; }
+.brand-mark { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid #566071; border-radius: 7px; color: #b7c8e5; font-size: 13px; }
+.nav-links { display: flex; align-items: center; gap: 20px; color: #8b929e; font-size: 12px; }
+.nav-links a { transition: color 180ms ease; }
+.nav-links a:hover, .nav-links a:focus-visible { color: #f3f5f8; }
+.status-dot { display: inline-flex; align-items: center; gap: 7px; color: #9da5b1; }
+.status-dot i { width: 7px; height: 7px; border-radius: 50%; background: #42d392; box-shadow: 0 0 0 4px rgba(66, 211, 146, .12); }
+.chat-panel { flex: 1; min-height: 690px; margin-top: 18px; overflow: hidden; border: 1px solid #202228; border-radius: 3px; background: #101115; box-shadow: 0 22px 70px rgba(0, 0, 0, .28); }
+.conversation { height: 100%; overflow: hidden; }
+.conversation [data-aui-thread-viewport] { height: 100%; overflow: auto; padding: 24px clamp(18px, 7vw, 110px); }
+.empty-state { display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 720px; margin: min(25vh, 190px) auto 0; text-align: center; color: #8e96a3; line-height: 1.6; }
+.empty-state .eyebrow { margin: 0; color: #73839c; font-size: 11px; font-weight: 700; letter-spacing: .15em; }
+.empty-state h1 { margin: 0; color: #f4f6f9; font-size: clamp(30px, 4vw, 48px); font-weight: 650; letter-spacing: -.035em; }
+.empty-state span { font-size: 14px; color: #8f96a2; }
+.message { max-width: 820px; margin: 0 auto 28px; }
+.message.user { display: flex; flex-direction: column; align-items: flex-end; }
+.message-label { margin-bottom: 8px; color: #78818f; font-size: 11px; font-weight: 650; }
+.message-body { white-space: pre-wrap; line-height: 1.7; font-size: 15px; }
+.message.assistant .message-body { padding: 18px 20px; border: 1px solid #2b2f37; border-radius: 12px; color: #dfe4ec; background: #17191e; }
+.message.user .message-body { max-width: 82%; padding: 13px 17px; border: 1px solid #4b76b5; border-radius: 12px 12px 3px 12px; color: #f5f8ff; background: #315f9e; }
+.composer { display: flex; align-items: center; gap: 10px; max-width: 720px; margin: 28px auto 8px; padding: 8px 8px 8px 16px; border: 1px solid #343943; border-radius: 13px; background: #1b1e23; box-shadow: 0 10px 30px rgba(0,0,0,.22); }
+.composer-input { min-width: 0; flex: 1; min-height: 42px; padding: 10px 0; border: 0; color: #f1f4f8; background: transparent; font: inherit; font-size: 14px; outline: none; resize: none; }
+.composer-input::placeholder { color: #818996; }
+.composer-input:focus { box-shadow: none; }
+.composer-send { display: grid; flex: 0 0 34px; width: 34px; height: 34px; place-items: center; border: 0; border-radius: 50%; color: #11151b; background: #8db6ec; font-size: 21px; line-height: 1; cursor: pointer; transition: transform 180ms ease, background 180ms ease; }
+.composer-send:hover:not(:disabled), .composer-send:focus-visible:not(:disabled) { background: #b2d1f8; transform: translateY(-1px); }
+.composer-send:disabled { cursor: not-allowed; opacity: .38; }
+.notice { margin: 14px 0 0; color: #656d79; text-align: center; font-size: 11px; }
+@media (max-width: 640px) {
+  .app-shell { padding: 12px 10px 18px; }
+  .topbar { padding: 0 12px; }
+  .nav-links a { display: none; }
+  .chat-panel { min-height: calc(100dvh - 110px); margin-top: 12px; }
+  .conversation [data-aui-thread-viewport] { padding: 20px 14px; }
+  .empty-state { margin-top: 19vh; }
+  .empty-state h1 { font-size: 30px; }
+  .message.user .message-body { max-width: 92%; }
+  .composer { margin-top: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

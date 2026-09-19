@@ -1,0 +1,96 @@
+{
+  "source": "baoxian-agent/test-fixtures",
+  "cases": [
+    {
+      "claim_id": "SRC-CRASH1",
+      "customer_id": "001",
+      "policy_number": "LIAB-AUTO-001",
+      "incident_type": "collision",
+      "description": "2025年7月17日，约翰·彼得森的2004款本田雅阁停在斯普林菲尔德一处停车场时，被试图侧方停车的灰色皮卡撞击前部和驾驶员一侧。前保险杠、左前翼子板、车轮轮胎、车门漆面及车灯格栅受损，车辆已拖至维修厂。现场有目击者、警方报告、事故照片和维修估价单。",
+      "estimated_loss": 6800,
+      "documents": ["statement", "police_report", "photos", "repair_estimate"],
+      "required_documents": ["statement", "police_report", "photos", "repair_estimate"],
+      "damage_consistent": true,
+      "risk_flags": [],
+      "expected_decision": "HUMAN_REVIEW"
+    },
+    {
+      "claim_id": "SRC-CRASH2",
+      "customer_id": "002",
+      "policy_number": "COMM-AUTO-001",
+      "incident_type": "collision",
+      "description": "2025年7月18日，萨曼莎·特纳在纽约州奥尔巴尼绿灯直行时，被闯红灯的车辆撞击驾驶员一侧。两扇车门、B柱、后轮和车窗严重受损，侧气囊弹出；警方、目击者、拖车收据和维修材料均已提交。",
+      "estimated_loss": 12500,
+      "documents": ["statement", "police_report", "photos", "witness_statement", "repair_estimate"],
+      "required_documents": ["statement", "police_report", "photos", "repair_estimate"],
+      "damage_consistent": true,
+      "risk_flags": [],
+      "expected_decision": "APPROVED"
+    },
+    {
+      "claim_id": "SRC-CRASH3",
+      "customer_id": "003",
+      "policy_number": "LIAB-AUTO-001",
+      "incident_type": "collision",
+      "description": "2025年7月19日，迈克尔·罗德里格斯驾驶2012款铃木SX4左转时，被超速超车车辆撞击左后侧，车辆随后撞上路缘。后保险杠、车轮悬挂和前保险杠均受损，车辆无法行驶，已提交警方报告、目击者陈述、照片、拖车收据和维修估价。",
+      "estimated_loss": 9100,
+      "documents": ["statement", "police_report", "photos", "witness_statement", "repair_estimate"],
+      "required_documents": ["statement", "police_report", "photos", "repair_estimate"],
+      "damage_consistent": true,
+      "risk_flags": [],
+      "expected_decision": "HUMAN_REVIEW"
+    },
+    {
+      "claim_id": "SRC-CRASH4",
+      "customer_id": "004",
+      "policy_number": "COMM-AUTO-001",
+      "incident_type": "collision",
+      "description": "2025年7月19日，安德莉亚·贝内特驾驶2011款斯巴鲁傲虎在停车标志前排队时被蓝色轿车追尾。后保险杠、后翼子板、尾灯、后备厢门和悬挂受损，已提交警方报告、照片、目击者陈述以及拖车和维修估价材料。",
+      "estimated_loss": 7400,
+      "documents": ["statement", "police_report", "photos", "witness_statement", "repair_estimate"],
+      "required_documents": ["statement", "police_report", "photos", "repair_estimate"],
+      "damage_consistent": true,
+      "risk_flags": [],
+      "expected_decision": "APPROVED"
+    },
+    {
+      "claim_id": "SRC-CRASH5",
+      "customer_id": "005",
+      "policy_number": "COMM-AUTO-001",
+      "incident_type": "collision",
+      "description": "2025年7月19日，克里斯托弗·瑞恩驾驶2016款丰田卡罗拉通过哥伦布市路口时，被未让行的灰色皮卡撞击左后侧。后翼子板、保险杠、尾灯、后车门和车轮受损，车辆不宜继续行驶，已提交警方报告、照片、目击者陈述、拖车收据和初步维修估价。",
+      "estimated_loss": 8600,
+      "documents": ["statement", "police_report", "photos", "witness_statement", "repair_estimate"],
+      "required_documents": ["statement", "police_report", "photos", "witness_statement", "repair_estimate"],
+      "damage_consistent": true,
+      "risk_flags": [],
+      "expected_decision": "APPROVED"
+    }
+  ],
+  "policies": {
+    "LIAB-AUTO-001": "# 责任险汽车保单\n保单只承保对第三方造成的人身伤害和财产损失。\n排除：被保险车辆自身的碰撞损坏、盗窃、自然灾害和机械故障。",
+    "COMM-AUTO-001": "# 商业汽车保单\nCoverage: Accidental collision damage（商业用途车辆发生碰撞造成的损坏）。\nCoverage: Weather-related damage（商业运营期间的天气损坏）。\nDeductible: 500 currency units per collision claim."
+  },
+  "evaluation_queries": [
+    {
+      "query": "根据摩托车保单，摩托车保险有哪些具体保障和限额？",
+      "ground_truth": "应包含综合险、碰撞险、责任险及无保险或保额不足驾驶人保障，并说明相应限额和免赔额。"
+    },
+    {
+      "query": "根据综合汽车保单，车辆被盗是否承保，保障细节是什么？",
+      "ground_truth": "通常由综合险承保，并适用相应免赔额和保单限额。"
+    },
+    {
+      "query": "商业汽车保单规定的责任险限额是多少？",
+      "ground_truth": "商业汽车责任险通常高于个人保单，并分别规定每人、每次事故的人身伤害限额及每次事故财产损失限额。"
+    },
+    {
+      "query": "高价值车辆保单对定制改装和售后配件提供什么保障？",
+      "ground_truth": "可能承保定制改装和售后配件，但通常需要额外保障、批单和完整证明材料。"
+    },
+    {
+      "query": "责任险汽车保单有哪些明确的除外责任和限制？",
+      "ground_truth": "责任险不承保被保险车辆自身的碰撞、盗窃、破坏或自然灾害损失，也不承保被保险人自身伤害。"
+    }
+  ]
+}
