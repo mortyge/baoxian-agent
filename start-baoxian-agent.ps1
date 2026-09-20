@@ -1,17 +1,29 @@
 $ErrorActionPreference = "Stop"
 $ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ApiPort = 8000
-$FrontendPort = 3000
+$ApiPort = 8002
+$WebUiPort = 8080
 $Python = Join-Path $ProjectRoot ".venv\Scripts\python.exe"
-$FrontendDir = Join-Path $ProjectRoot "frontend"
+$WebUiRoot = Join-Path (Split-Path -Parent $ProjectRoot) "open-webui"
+$WebUiPython = Join-Path $WebUiRoot ".venv\Scripts\python.exe"
+$WebUiBackend = Join-Path $WebUiRoot "backend"
 $LogDir = Join-Path $ProjectRoot "logs"
 function Test-Port($Port) { return [bool](Get-NetTCPConnection -State Listen -LocalPort $Port -ErrorAction SilentlyContinue) }
-if (-not (Test-Path $Python)) { Write-Host "未找到 Python 虚拟环境：$Python" -ForegroundColor Yellow; Write-Host "请先执行：uv venv .venv，然后安装项目依赖。" -ForegroundColor Yellow; exit 1 }
-if (-not (Get-Command npm -ErrorAction SilentlyContinue)) { Write-Host "未找到 npm，请先安装 Node.js。" -ForegroundColor Red; exit 1 }
+function Wait-Http($Url, $Attempts = 30) { for ($i=0; $i -lt $Attempts; $i++) { try { $r=Invoke-WebRequest -Uri $Url -UseBasicParsing -TimeoutSec 2; if ($r.StatusCode -ge 200 -and $r.StatusCode -lt 500) { return $true } } catch { Start-Sleep -Seconds 1 } }; return $false }
+if (-not (Test-Path $Python)) { throw "Insurance Agent .venv is missing. Run uv venv .venv and install dependencies first." }
+if (-not (Test-Path $WebUiPython)) { throw "Open WebUI was not found. Put it at $WebUiRoot and create its .venv first." }
+if (-not (Test-Path $WebUiBackend)) { throw "Open WebUI backend directory is missing: $WebUiBackend" }
 New-Item -ItemType Directory -Path $LogDir -Force | Out-Null
-if (-not (Test-Port $ApiPort)) { Start-Process -FilePath $Python -ArgumentList "-m","uvicorn","app.main:app","--host","127.0.0.1","--port",$ApiPort -WorkingDirectory $ProjectRoot -RedirectStandardOutput (Join-Path $LogDir "api.out.log") -RedirectStandardError (Join-Path $LogDir "api.err.log"); Write-Host "保险 API 已启动：http://127.0.0.1:$ApiPort" -ForegroundColor Green } else { Write-Host "保险 API 已在端口 $ApiPort 运行，跳过启动。" -ForegroundColor DarkYellow }
-if (-not (Test-Path (Join-Path $FrontendDir "node_modules"))) { Push-Location $FrontendDir; try { npm install } finally { Pop-Location } }
-if (-not (Test-Port $FrontendPort)) { Start-Process -FilePath "npm.cmd" -ArgumentList "run","dev","--","--port",$FrontendPort -WorkingDirectory $FrontendDir -RedirectStandardOutput (Join-Path $LogDir "frontend.out.log") -RedirectStandardError (Join-Path $LogDir "frontend.err.log"); Write-Host "前端正在启动：http://127.0.0.1:$FrontendPort" -ForegroundColor Green } else { Write-Host "前端已在端口 $FrontendPort 运行，跳过启动。" -ForegroundColor DarkYellow }
-Start-Sleep -Seconds 2
-Start-Process "http://127.0.0.1:$FrontendPort"
-Write-Host "Baoxian Agent 已启动。日志目录：$LogDir" -ForegroundColor Cyan
+if (-not (Test-Port $ApiPort)) { Start-Process -FilePath $Python -ArgumentList "-m","uvicorn","app.main:app","--host","127.0.0.1","--port",$ApiPort -WorkingDirectory $ProjectRoot -RedirectStandardOutput (Join-Path $LogDir "api.out.log") -RedirectStandardError (Join-Path $LogDir "api.err.log") }
+if (-not (Wait-Http "http://127.0.0.1:$ApiPort/health")) { throw "Insurance API failed to start. See logs/api.err.log." }
+if (-not (Test-Port $WebUiPort)) {
+    $env:OPENAI_API_BASE_URLS = "http://127.0.0.1:$ApiPort/v1"
+    $env:OPENAI_API_KEYS = "local-insurance-agent"
+    $env:ENABLE_OLLAMA_API = "false"
+    $env:WEBUI_AUTH = "false"
+    $env:WEBUI_SECRET_KEY = "baoxian-agent-dev-secret-32bytes"
+    $env:OAUTH_SESSION_TOKEN_ENCRYPTION_KEY = "baoxian-agent-oauth-dev-key-32bytes"
+    Start-Process -FilePath $WebUiPython -ArgumentList "-m","uvicorn","open_webui.main:app","--host","127.0.0.1","--port",$WebUiPort -WorkingDirectory $WebUiBackend -RedirectStandardOutput (Join-Path $LogDir "openwebui.out.log") -RedirectStandardError (Join-Path $LogDir "openwebui.err.log")
+}
+if (-not (Wait-Http "http://127.0.0.1:$WebUiPort/")) { throw "Open WebUI failed to start. See logs/openwebui.err.log." }
+Start-Process "http://127.0.0.1:$WebUiPort"
+Write-Host "Open WebUI started at http://127.0.0.1:$WebUiPort"
