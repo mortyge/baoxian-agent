@@ -5,6 +5,7 @@ __pycache__/
 *.py[cod]
 *.sqlite3
 *.sqlite3-*
+logs/
 frontend/node_modules/
 frontend/dist/
 tests/test_agentic_ai_hack_real_data.py

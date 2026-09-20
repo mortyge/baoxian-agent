@@ -40,6 +40,8 @@ Agent 使用 PydanticAI 和 Pydantic 结构化输出；决策门不把最终判�
 
 需要 Python 3.11+，建议使用 `uv` 管理环境：
 
+Windows 用户也可以直接双击 `start-baoxian-agent.bat`，脚本会启动 API 和前端，并自动打开 `http://127.0.0.1:3000`。运行日志写入 `logs/`；已占用的 `8000` 和 `3000` 端口会自动复用。
+
 ```powershell
 cd baoxian-agent
 uv venv .venv
